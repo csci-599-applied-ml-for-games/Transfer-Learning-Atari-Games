@@ -1,0 +1,8 @@
+numpy
+gym
+keras
+matplotlib
+opencv-python
+tensorflow-gpu
+PIL
+tensorflow
