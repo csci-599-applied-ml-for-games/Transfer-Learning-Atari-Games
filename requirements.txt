@@ -4,5 +4,5 @@ keras
 matplotlib
 opencv-python
 tensorflow-gpu
-PIL
 tensorflow
+atari-py

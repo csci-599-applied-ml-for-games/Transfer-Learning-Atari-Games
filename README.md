@@ -20,15 +20,17 @@ It can emulate any of the following games:
 > 'Boxing', 'Assault', 'Alien', 'Qbert', 'Enduro',
 > 'ChopperCommand', 'Jamesbond']
 
-## Purpose
-The ultimate goal of this project is to implement and compare various RL approaches with atari games as a common denominator.
+## Objective
+The objective of this project is to implement and compare various RL approaches with atari games as a common environment, and to measure the impact of transfer learning across similar objective games.  
 
 ## Usage
 
 1. Clone the repo.
 2. Go to the project's root folder.
-3. Install required packages`pip install -r requirements.txt`.
-4. Launch atari. I recommend starting with help command to see all available modes `python atari.py --help`.
+3. Install required packages `pip install -r requirements.txt`.
+4. Training example - `python3 atari.py  -g=Pong -m=ddqn_train`.
+5. Testing example - `python3 atari.py  -g=Pong -m=ddqn_test -r=True`.
+6. Help `python atari.py --help`.
 
 
 ### Model Architecture
