@@ -141,7 +141,10 @@ class DDQNTrainer(DDQNGameModel):
                             batch_size=BATCH_SIZE,
                             verbose=0)
         loss = fit.history["loss"][0]
-        accuracy = fit.history["accuracy"][0]
+        if "acc" in fit.history:
+            accuracy = fit.history["acc"][0]
+        else:
+            accuracy = fit.history["accuracy"][0]
         return loss, accuracy, np.mean(max_q_values)
 
     def _update_epsilon(self):
