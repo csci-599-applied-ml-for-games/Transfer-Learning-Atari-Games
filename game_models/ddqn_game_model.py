@@ -31,8 +31,10 @@ class DDQNGameModel(BaseGameModel):
                                action_space)
         self.model_path = model_path
         self.ddqn = ConvolutionalNeuralNetwork(self.input_shape, action_space).model
-        if os.path.isfile(self.model_path):
-            self.ddqn.load_weights(self.model_path)
+        chkp = 'model.h5'
+        if os.path.isfile(chkp):
+            print('loading model from ' + chkp)
+            self.ddqn.load_weights(chkp)
 
     def _save_model(self):
         self.ddqn.save_weights(self.model_path)
@@ -79,8 +81,8 @@ class DDQNTrainer(DDQNGameModel):
         self.memory = []
 
     def move(self, state):
-        if np.random.rand() < self.epsilon or len(self.memory) < REPLAY_START_SIZE:
-            return random.randrange(self.action_space)
+        # if np.random.rand() < self.epsilon or len(self.memory) < REPLAY_START_SIZE:
+        #     return random.randrange(self.action_space)
         q_values = self.ddqn.predict(np.expand_dims(np.asarray(state).astype(np.float64), axis=0), batch_size=1)
         return np.argmax(q_values[0])
 
