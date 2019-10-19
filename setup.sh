@@ -17,4 +17,5 @@ pyenv activate mlforgames
 
 git clone https://github.com/csci-599-applied-ml-for-games/Transfer-Learning-Atari-Games.git
 sudo apt-get install -y libsm6 libxext6 libxrender1 libfontconfig1
+cd Transfer-Learning-Atari-Games
 pip install -r requirements.txt
