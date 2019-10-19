@@ -70,7 +70,8 @@ class Atari:
                 if terminal:
                     game_model.save_run(score, step, run)
                     break
-                # time.sleep(0.05)
+                if render:
+                    time.sleep(0.05)
 
     def _args(self):
         parser = argparse.ArgumentParser()
