@@ -7,6 +7,7 @@ import atari_py
 from game_models.ddqn_game_model import DDQNTrainer, DDQNSolver
 from game_models.ge_game_model import GETrainer, GESolver
 from gym_wrappers import MainGymWrapper
+from gym.wrappers.monitoring.video_recorder import VideoRecorder
 
 FRAMES_IN_OBSERVATION = 4
 FRAME_SIZE = 84
@@ -38,6 +39,7 @@ class Atari:
 
         run = 0
         total_step = 0
+        vid = VideoRecorder(env, './sample.mp4')
         while True:
             if total_run_limit is not None and run >= total_run_limit:
                 print("Reached total run limit of: " + str(total_run_limit))
@@ -55,12 +57,13 @@ class Atari:
                 step += 1
 
                 if render:
+                    vid.capture_frame()
                     env.render()
 
                 action = game_model.move(current_state)
                 next_state, reward, terminal, info = env.step(action)
-                if clip:
-                    np.sign(reward)
+                # if clip:
+                #     np.sign(reward)
                 score += reward
                 game_model.remember(current_state, action, reward, next_state, terminal)
                 current_state = next_state
@@ -68,10 +71,12 @@ class Atari:
                 game_model.step_update(total_step)
 
                 if terminal:
+                    vid.close()
                     game_model.save_run(score, step, run)
-                    break
-                if render:
-                    time.sleep(0.05)
+                    # break
+                    exit(0)
+                # if render:
+                    # time.sleep(0.001)
 
     def _args(self):
         parser = argparse.ArgumentParser()
