@@ -27,10 +27,10 @@ INPUT_SHAPE = (FRAMES_IN_OBSERVATION, FRAME_SIZE, FRAME_SIZE)
 class Atari:
 
     def __init__(self):
-        game_name, game_mode, render, total_step_limit, total_run_limit, clip = self._args()
+        game_name, game_mode, render, total_step_limit, total_run_limit, clip, model_name = self._args()
         env_name = game_name + "Deterministic-v4"  # Handles frame skipping (4) at every iteration
         env = MainGymWrapper.wrap(gym.make(env_name))
-        self._main_loop(self._game_model(game_mode, game_name, env.action_space.n), env, render, total_step_limit, total_run_limit, clip)
+        self._main_loop(self._game_model(game_mode, game_name, env.action_space.n, model_name), env, render, total_step_limit, total_run_limit, clip)
 
     def _main_loop(self, game_model, env, render, total_step_limit, total_run_limit, clip):
         if isinstance(game_model, GETrainer):
@@ -59,8 +59,6 @@ class Atari:
 
                 action = game_model.move(current_state)
                 next_state, reward, terminal, info = env.step(action)
-                if clip:
-                    np.sign(reward)
                 score += reward
                 game_model.remember(current_state, action, reward, next_state, terminal)
                 current_state = next_state
@@ -71,7 +69,7 @@ class Atari:
                     game_model.save_run(score, step, run)
                     break
                 if render:
-                    time.sleep(0.05)
+                    time.sleep(0.01)
 
     def _args(self):
         parser = argparse.ArgumentParser()
@@ -82,6 +80,9 @@ class Atari:
         parser.add_argument("-tsl", "--total_step_limit", help="Choose how many total steps (frames visible by agent) should be performed. Default is '5000000'.", default=5000000, type=int)
         parser.add_argument("-trl", "--total_run_limit", help="Choose after how many runs we should stop. Default is None (no limit).", default=None, type=int)
         parser.add_argument("-c", "--clip", help="Choose whether we should clip rewards to (0, 1) range. Default is 'True'", default=True, type=bool)
+        parser.add_argument("-model", "--model_name",
+                            help="Model to be used for testing. Default is 'model'",
+                            default='model.h5', type=str)
         args = parser.parse_args()
         game_mode = args.mode
         game_name = args.game
@@ -89,19 +90,22 @@ class Atari:
         total_step_limit = args.total_step_limit
         total_run_limit = args.total_run_limit
         clip = args.clip
+        model_name = args.model_name
         print("Selected game: " + str(game_name))
         print("Selected mode: " + str(game_mode))
         print("Should render: " + str(render))
         print("Should clip: " + str(clip))
         print("Total step limit: " + str(total_step_limit))
         print("Total run limit: " + str(total_run_limit))
-        return game_name, game_mode, render, total_step_limit, total_run_limit, clip
+        print("Loading run limit: " + str(total_run_limit))
+        print("Loading model_name: " + model_name)
+        return game_name, game_mode, render, total_step_limit, total_run_limit, clip, model_name
 
-    def _game_model(self, game_mode,game_name, action_space):
+    def _game_model(self, game_mode,game_name, action_space, model_name):
         if game_mode == "ddqn_train":
             return DDQNTrainer(game_name, INPUT_SHAPE, action_space)
         elif game_mode == "ddqn_test":
-            return DDQNSolver(game_name, INPUT_SHAPE, action_space)
+            return DDQNSolver(game_name, INPUT_SHAPE, action_space, model_name)
         elif game_mode == "ge_training":
             return GETrainer(game_name, INPUT_SHAPE, action_space)
         elif game_mode == "ge_testing":

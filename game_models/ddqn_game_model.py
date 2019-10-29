@@ -40,9 +40,10 @@ class DDQNGameModel(BaseGameModel):
 
 class DDQNSolver(DDQNGameModel):
 
-    def __init__(self, game_name, input_shape, action_space):
-        testing_model_path = "./assets/" + game_name + "/ddqn/model.h5"
+    def __init__(self, game_name, input_shape, action_space, model_name):
+        testing_model_path = "./assets/" + game_name + "/ddqn/" + model_name
         assert os.path.exists(os.path.dirname(testing_model_path)), "No testing model in: " + str(testing_model_path)
+        print('Using ', testing_model_path, ' for testing')
         DDQNGameModel.__init__(self,
                                game_name,
                                "DDQN testing",
