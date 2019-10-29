@@ -123,3 +123,55 @@ class Stat:
         with scores_file:
             writer = csv.writer(scores_file)
             writer.writerow([score])
+
+if __name__=="__main__":
+    def custom_log():
+        input_path = 'q.csv'
+        output_path = 'q.png'
+        small_batch_length = 10
+        big_batch_length = 100
+        x_label = "update"
+        y_label = "q"
+        x = []
+        y = []
+        with open(input_path, "r") as scores:
+            reader = csv.reader(scores)
+            data = list(reader)
+            for i in range(0, len(data)):
+                x.append(float(i)*small_batch_length)
+                y.append(float(data[i][0]))
+
+        plt.subplots()
+        plt.plot(x, y, label="last " + str(small_batch_length) + " average")
+
+        batch_averages_y = []
+        batch_averages_x = []
+        temp_values_in_batch = []
+        relative_batch_length = big_batch_length/small_batch_length
+
+        for i in range(len(y)):
+            temp_values_in_batch.append(y[i])
+            if (i+1) % relative_batch_length == 0:
+                if not batch_averages_y:
+                    batch_averages_y.append(np.mean(temp_values_in_batch))
+                    batch_averages_x.append(0)
+                batch_averages_x.append(len(batch_averages_y)*big_batch_length)
+                batch_averages_y.append(np.mean(temp_values_in_batch))
+                temp_values_in_batch = []
+        if len(batch_averages_x) > 1:
+            plt.plot(batch_averages_x, batch_averages_y, linestyle="--", label="last " + str(big_batch_length) + " average")
+
+        # if len(x) > 1:
+        #     trend_x = x[1:]
+        #     z = np.polyfit(np.array(trend_x), np.array(y[1:]), 1)
+        #     p = np.poly1d(z)
+        #     plt.plot(trend_x, p(trend_x), linestyle="-.",  label="trend")
+
+        plt.title("Pong DDQN training")
+        plt.xlabel(x_label)
+        plt.ylabel(y_label)
+        plt.legend(loc="upper left")
+        plt.savefig(output_path, bbox_inches="tight")
+        plt.close()
+
+    # custom_log()
