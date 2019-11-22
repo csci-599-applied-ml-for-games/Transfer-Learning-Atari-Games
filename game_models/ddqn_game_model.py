@@ -14,7 +14,7 @@ TARGET_NETWORK_UPDATE_FREQUENCY = 40000
 MODEL_PERSISTENCE_UPDATE_FREQUENCY = 10000
 REPLAY_START_SIZE = 50000
 
-EXPLORATION_MAX = 1.0
+EXPLORATION_MAX = 0.7
 EXPLORATION_MIN = 0.1
 EXPLORATION_TEST = 0.02
 EXPLORATION_STEPS = 850000
@@ -81,8 +81,8 @@ class DDQNTrainer(DDQNGameModel):
         self.memory = []
 
     def move(self, state):
-        # if np.random.rand() < self.epsilon or len(self.memory) < REPLAY_START_SIZE:
-        #     return random.randrange(self.action_space)
+        if np.random.rand() < self.epsilon or len(self.memory) < REPLAY_START_SIZE:
+            return random.randrange(self.action_space)
         q_values = self.ddqn.predict(np.expand_dims(np.asarray(state).astype(np.float64), axis=0), batch_size=1)
         return np.argmax(q_values[0])
 
