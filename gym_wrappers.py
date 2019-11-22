@@ -180,6 +180,18 @@ class ChannelsFirstImageShape(gym.ObservationWrapper):
     def observation(self, observation):
         return np.swapaxes(observation, 2, 0)
 
+class ActionMapper(gym.ActionWrapper):
+    """
+    Wrap a gym environment and make it use discrete actions.
+    Args:
+        combos: ordered list of lists of valid button combinations
+    """
+    def __init__(self, env):
+        super().__init__(env)
+        self.action_space = gym.spaces.Discrete(4)
+
+    def action(self, action):
+        return action
 
 class MainGymWrapper():
 
@@ -192,4 +204,6 @@ class MainGymWrapper():
         env = ChannelsFirstImageShape(env)
         env = FrameStack(env, 4)
         env = ClippedRewardsWrapper(env)
+        env = ActionMapper(env)
         return env
+
