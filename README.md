@@ -23,6 +23,9 @@ It can emulate any of the following games:
 ## Objective
 The objective of this project is to implement and compare various RL approaches with atari games as a common environment, and to measure the impact of transfer learning across similar objective games.  
 
+## Demo Video
+https://youtu.be/EOIF9reE8zI
+
 ## Usage
 
 1. Clone the repo.
